@@ -1,12 +1,12 @@
 ## OpenPLC - IEC 61131-3 compatible open source PLC
 
-Made for [netPI](https://www.netiot.com/netpi/), the Raspberry Pi 3 Architecture based industrial suited Open Edge Connectivity Ecosystem
+Made for [netPI](https://www.netiot.com/netpi/), the Raspberry Pi 3B Architecture based industrial suited Open Edge Connectivity Ecosystem
 
-### Debian Stretch with OpenPLC V3 runtime, SSH server and user root
+### Debian with OpenPLC V3 runtime, SSH server and user root
 
 The image provided hereunder deploys a container with OpenPLC V3 runtime and adapted hardware layer for netPI. OpenPLC is a completely free and standardized software basis to create programmable logic controllers. The editor that comes extra lets you program in the languages Ladder Diagram (LD), Instruction List (IL), Structured Text (ST), Function Block Diagram (FBD) and Sequential Function Chart (SFC) in accordance with the IEC 61131-3.
 
-Base of this image builds a tagged version of [debian:stretch](https://hub.docker.com/r/resin/armv7hf-debian/tags/) with enabled [SSH](https://en.wikipedia.org/wiki/Secure_Shell), created user 'root' and peinstalled OpenPLC_v3 project from [here](https://github.com/thiagoralves/OpenPLC_v3) with modified /webserver/core/hardware_layers/raspberrpi.cpp file to fit the netPI hardware (gpio interface).
+Base of this image builds [debian](https://www.balena.io/docs/reference/base-images/base-images/) with enabled [SSH](https://en.wikipedia.org/wiki/Secure_Shell), created user 'root' and peinstalled OpenPLC_v3 project from [here](https://github.com/thiagoralves/OpenPLC_v3) with modified /webserver/core/hardware_layers/raspberrpi.cpp file to fit the netPI hardware (gpio interface).
 
 Using OpenPLC works in conjunction with a [PLCOpen Editor](http://www.openplcproject.com/plcopen-editor) that lets you writing PLC programs offline to import them into the runtime. This tool has to be installed under Linux or Windows separately.
 
@@ -20,9 +20,9 @@ Questions can be directed to the [official OpenPLC forum](https://openplc.discus
 
 For remote login (not necessary for default usage) to the container across SSH the container's SSH port `22` needs to be mapped to any free netPI host port.
 
-To allow the access to the OpenPLC web interface over a web browser the container TCP port 8080 needs to be exposed to any free netPI host port.
+To allow the access to the OpenPLC web interface over a web browser the container TCP port `8080` needs to be exposed to any free netPI host port.
 
-By default OpenPLC supports Modbus TCP server functionality using the default port 502. This port should be exposed to netPI host port 502 (be compatible with standard Modbus TCP clients).
+By default OpenPLC supports Modbus TCP server functionality using the default port `502`. This port should be exposed to netPI host port `502` (be compatible with standard Modbus TCP clients).
 
 ##### Privileged mode
 
@@ -52,13 +52,13 @@ STEP 3. Enter the following parameters under **Containers > Add Container**
 
 * **Runtime > Privileged mode** : `On`
 
-STEP 4. Press the button **Actions > Start container**
+STEP 4. Press the button **Actions > Start/Deploy container**
 
-Pulling the image may take a while (5-10mins). In some cases a web browser specific timeout may be exceeded interrupting the load process. In this case repeat the **Actions > Start container** action.
+Pulling the image may take a while (5-10mins). Sometimes it takes so long that a time out is indicated. In this case repeat the **Actions > Start/Deploy container** action.
 
 #### Accessing
 
-The container starts an SSH server as well as the OpenPLC runtime automatically. 
+The container starts an SSH server as well as the OpenPLC runtime automatically when started. 
 
 Just in case your want to open a terminal connection to it with an SSH client such as [putty](http://www.putty.org/) using netPI's IP address at your mapped port 22. Use the credentials `root` as user and `root` as password when asked and you are logged in as root user `root`.
 
@@ -112,7 +112,7 @@ STEP 2: Make your edits in the project
 
 STEP 3: Click `File\Save` to save the project again
 
-STEP 4: Click `Generate Program` to generate a new *.st file you can load into your OpenPLC runtime
+STEP 4: Click `Generate Program` to generate a new .st file you can load into your OpenPLC runtime
 
 ##### Digital IO using NIOT-E-NPIX-4DI4DO module
 
@@ -120,16 +120,15 @@ netPI can be extended physically by advanced network modules using its bottom sl
 
 Access the 4 digital inputs at the addresses %IX0.0, %IX0.1, %IX0.2 and %IX0.3 and the 4 digital outputs at %QX0.0, %QX0.1, %QX0.2 and %QX0.3 in your project.
 
-#### Tags
+#### Automated build
 
-* **hilscher/netPI-openplc** - non-tagged (but tested OK) latest development output of the GitHub project master branch.
+The project complies with the scripting based [Dockerfile](https://docs.docker.com/engine/reference/builder/) method to build the image output file. Using this method is a precondition for an [automated](https://docs.docker.com/docker-hub/builds/) web based build process on DockerHub platform.
 
-#### GitHub sources
+DockerHub web platform is x86 CPU based, but an ARM CPU coded output file is needed for Raspberry systems. This is why the Dockerfile includes the [balena](https://balena.io/blog/building-arm-containers-on-any-x86-machine-even-dockerhub/) steps.
 
-The image is built from the GitHub project [netPI-openplc](https://github.com/Hilscher/netPI-openplc). It complies with the [Dockerfile](https://docs.docker.com/engine/reference/builder/) method to build a Docker image [automated](https://docs.docker.com/docker-hub/builds/).
+#### License
 
-View the license information for the software in the Github project. As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained). As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.
-
-Hint: Cross-building the image for an ARM architecture based CPU on [Docker Hub](https://hub.docker.com/)(x86 CPU based servers) the Dockerfile uses the method described here [resin.io](https://resin.io/blog/building-arm-containers-on-any-x86-machine-even-dockerhub/). If you want to build the image on a Raspberry Pi directly then comment out the two lines `RUN [ "cross-build-start" ]` and `RUN [ "cross-build-end" ]` in the file Dockerfile before.
+View the license information for the software in the project. As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
+As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.
 
 [![N|Solid](http://www.hilscher.com/fileadmin/templates/doctima_2013/resources/Images/logo_hilscher.png)](http://www.hilscher.com)  Hilscher Gesellschaft fuer Systemautomation mbH  www.hilscher.com
